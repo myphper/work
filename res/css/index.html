@@ -1,0 +1,177 @@
+<html>
+<head>
+<script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+</head>
+<body>
+
+
+</body>
+<script type="text/javascript">
+
+var Tpl = {
+	simple : function(tpl , replace){
+
+		for(var index in replace){
+			tpl = tpl.replace(index , replace.index)
+		}
+		//replace.each(function(){
+		//})
+		return tpl;
+	}
+}
+var Ker = {
+	on : function(id , func){
+		$("*[k-name='"+id+"']").bind('click',func);
+	}
+}
+
+var ui = {
+tpls:{
+confirm : '<div style="z-index:10;visibility: visible; width:350px; position:absolute; top:100px; left:100px; display:block;" class=" j-ui-confirm ui_window pop-ugcdel">'+
+	'<div style="width:350px;" class="ui_pop_box">'+
+		'<div class="ui_pop_head_btn_close j-close"  k-name="jpop/confirm/del" ></div>'+
+		'<div class="ui_pop_body">'+
+		'<div class="j-content">'+
+			'<div class="popmem-box">'+
+				'<h2 class="popmem-title">{content}</h2>'+
+				'<div class="popmem-btn">'+
+					'<a href="javascript:;" class="btn-blue" k-name="jpop/confirm/ok">确定</a>'+
+					'<a href="javascript:;" class="btn-gray" k-name="jpop/confirm/cancel">取消</a>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="input_button_box j-buttons"> </div>'+
+		'</div>'+
+	'</div>'+
+	'<div class="ui_pop_mask"></div>'+
+	'</div>',
+alert : '<div style="z-index:10;visibility: visible; width:250px; position:absolute; top:100px; left:100px; display:block;" class=" j-ui-alert ui_window pop-ugcdel">'+
+	'<div style="width:250px;" class="ui_pop_box">'+
+		'<div class="ui_pop_head_btn_close j-close" k-name="jpop/confirm/del"></div>'+
+		'<div class="ui_pop_body">'+
+		'<div class="j-content">'+
+		'<div class="popmem-box">'+
+				'<h2 class="popmem-title">{content}</h2>'+
+				'<div class="popmem-btn">'+
+					'<a href="javascript:;" class="btn-blue"  k-name="jpop/alert/ok" >确定</a>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="input_button_box j-buttons"> </div>'+
+		'</div>'+
+	'</div>'+
+	'<div class="ui_pop_mask"></div>'+
+	'</div>'
+},
+inited : false,
+/**
+*@desc 生成ui的html结构，如果没有结构则向body生成一个，如果有则返回该结构
+*@param {String} type 表明生成何种ui结构
+*@return {Object} 返回ui结构的JQuery对象
+*/
+init : function(type){
+var _this = this;
+Ker.on('jpop/confirm/del',function(p,ktar){
+	_this.hide($(ktar));
+	_this.onClose && _this.onClose();
+});
+Ker.on('jpop/confirm/cancel',function(p,ktar){
+	_this.hide($(ktar));
+	_this.onCancel && _this.onCancel();
+});
+
+Ker.on('jpop/confirm/ok',function(p,ktar){
+	_this.hide($(ktar));
+	_this.onOk && _this.onOk();
+});
+
+Ker.on('jpop/alert/ok',function(p,ktar){
+	_this.hide($(ktar));
+});
+
+this.inited=true;
+},
+
+hide : function($ktar){
+if($ktar.length){
+	$ktar.parents('.ui_window.pop-ugcdel').hide();
+}
+},
+
+center : function($dom){
+ $dom.css("top", Math.max(0, (($(window).height() - $dom.outerHeight()) / 2) + $(window).scrollTop()) + "px");
+ $dom.css("left", Math.max(0, (($(window).width() - $dom.outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+
+},
+
+/**
+*@desc 弹出确认提示框
+*@param {Object} opt 参数
+				- onOk 点击确认的回调
+*/
+confirm : function(opt){
+var $dom=$(".j-ui-confirm");
+if(!$dom.length){
+	var html = Tpl.simple(this.tpls.confirm,{content : opt.content || '删除后不可恢复，确认吗？'});
+	$dom = $(html).appendTo(document.body);
+	this.init();
+}
+if(opt){
+	if(opt.onOk){
+		this.onOk = opt.onOk;
+	}
+	if(opt.onCancel){
+		this.onCancel = opt.onCancel;
+	}
+	if(opt.onClose){
+		this.onClose = opt.onClose;
+	}
+}
+this.center($dom);
+$dom.show();
+
+},
+/**
+*@desc 弹出提示框
+*@param {Object} opt 参数
+*/
+alert : function(title){
+var $dom=$(".j-ui-alert");
+if(!$dom.length){
+	var html = Tpl.simple(this.tpls.alert,{content : title || '删除成功'});
+	$dom = $(html).appendTo(document.body);
+	this.init();
+}
+this.center($dom);
+$dom.show();
+
+}
+}
+/*使用例子*/
+
+
+ui.confirm({
+content : '删除后不可恢复，确认吗？',
+onCancel : function(){_this.delBusy = false;},
+onClose : function(){_this.delBusy = false;},
+onOk :    function(){
+		$.ajax({
+			url : 'http://api.my.letv.com/video/user/deletevideo',
+			data : {
+				videoid : id || 0
+			},
+			dataType: 'jsonp',
+			success : function(res){
+				var code = res.code || 0;
+				if(code === 200){
+					_this.ui.alert('删除成功！');
+					$ktar.parents('li').remove();
+				}
+				_this.delBusy = false;
+			}
+
+		});
+	}
+});
+</script>
+</html>
