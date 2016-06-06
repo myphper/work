@@ -20,7 +20,7 @@ define(function(require, exports, module){
 		return {
 			backupUrls: function(){
 				content = JSON.stringify(this.getUrls());
-				fileName = 'urlbackup.json';
+				fileName = 'urlbackup-'+date.getDate()+'.json';
 				var aLink = document.createElement('a');
 				var blob = new Blob([content]);
 				var evt = document.createEvent("HTMLEvents");
