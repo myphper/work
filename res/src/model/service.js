@@ -19,22 +19,21 @@ define(function(require, exports, module){
 		}
 		return {
 			backupUrls: function(){
-//				content = JSON.stringify(this.getUrls());
-//				fileName = 'urlbackup-'+date.getDate()+'.json';
-//				var aLink = document.createElement('a');
-//				var blob = new Blob([content]);
-//				var evt = document.createEvent("HTMLEvents");
-				//initEvent 不加后两个参数在FF下会报错, 感谢 Barret Lee 的反馈
-//				evt.initEvent("click", false, false);
-//				aLink.download = fileName;
-//				aLink.href = URL.createObjectURL(blob);
-//				aLink.dispatchEvent(evt);
+				$('body').append($('<a/>').attr({id:'downloadjson',style:'display:none;',download:'urlbackup-'+date.getDate()+'.json',href:URL.createObjectURL(new Blob([JSON.stringify(this.getUrls())]))}));
+				document.getElementById('downloadjson').click();
+				//content = JSON.stringify(this.getUrls());
+				//fileName =;
+				//var aLink = document.createElement('a');
+				//var blob = new Blob([content]);
+				//var evt = document.createEvent("HTMLEvents");
+				//evt.initEvent("click", false, false);
+				//aLink.download = fileName;
+				//aLink.href = URL.createObjectURL(blob);
+				//aLink.dispatchEvent(evt);
 				//save unname
 				//window.open('data:application/txt;filename=exportData.txt;'+JSON.stringify(this.getUrls()));
 				//table export
 				//$('#customers').tableExport({type:'json',escape:'true'});
-				$('body').append($('<a>download</a>').attr({download:'urlbackup-'+date.getDate()+'.json',href:URL.createObjectURL(new Blob([JSON.stringify(this.getUrls())]))}));
-
 			},
 			getUrls: function() {
 				urls = store.get('urls') || store.set('urls', urldata.getData())
