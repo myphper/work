@@ -21,19 +21,6 @@ define(function(require, exports, module){
 			backupUrls: function(){
 				$('body').append($('<a/>').attr({id:'downloadjson',style:'display:none;',download:'urlbackup-'+date.getDate()+'.json',href:URL.createObjectURL(new Blob([JSON.stringify(this.getUrls())]))}));
 				document.getElementById('downloadjson').click();
-				//content = JSON.stringify(this.getUrls());
-				//fileName =;
-				//var aLink = document.createElement('a');
-				//var blob = new Blob([content]);
-				//var evt = document.createEvent("HTMLEvents");
-				//evt.initEvent("click", false, false);
-				//aLink.download = fileName;
-				//aLink.href = URL.createObjectURL(blob);
-				//aLink.dispatchEvent(evt);
-				//save unname
-				//window.open('data:application/txt;filename=exportData.txt;'+JSON.stringify(this.getUrls()));
-				//table export
-				//$('#customers').tableExport({type:'json',escape:'true'});
 			},
 			getUrls: function() {
 				urls = store.get('urls') || store.set('urls', urldata.getData())
