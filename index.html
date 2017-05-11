@@ -18,11 +18,21 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-5 col-lg-5">
+
+                <section id="todoapp">
+                    <header id="header">
+                        <h1>双引擎搜索</h1>
+                        <form onsubmit="return searchOpen(this)" action="http://www.baidu.com/baidu" target="_blank">
+                            <input id="search" ng-keypress="createOnEnter($event)" placeholder="回车双引擎搜索..." autofocus type="text"  name="word"  baiduSug="1">
+                        </form>
+                    </header>
+                </section>
+
 				<section id="todoapp">
 
 					<header id="header">
 						<h1 ng-bind="title[0]"></h1>
-						<input id="new-todo" ng-model="newTodo" ng-keypress="createOnEnter($event)" placeholder="待办事项..." autofocus>
+						<input id="new-todo" ng-model="newTodo" ng-keypress="createOnEnter($event)" placeholder="待办事项...">
 					</header>
 
 					<section id="main">
@@ -100,9 +110,31 @@
 			</li>
 		</ul>
 	</div>
-
+<script charset="gbk" src="http://www.baidu.com/js/opensug.js"></script>
 <script src="./res/lib/seajs/seajs/2.1.1/sea.js"></script>
 <script>
+    function searchOpen (formName) {
+        var type = 3;
+        var keyWord = formName.word.value;
+        var urls = []
+        if(type == 1){
+            urls = ['https://www.google.com/search?q='+keyWord];
+            openUrl(urls)
+        }else if(type == 2){
+            urls = ['https://www.baidu.com/baidu?wd='+keyWord];
+            openUrl(urls)
+        }else{
+            urls = ['https://www.google.com/search?q='+keyWord,'https://www.baidu.com/baidu?wd='+keyWord];
+            openUrl(urls)
+        }
+        return false;
+    };
+    function openUrl(urls){
+        for(var i in urls){
+            window.open(urls[i])
+        }
+    }
+
 	// Set configuration
 	seajs.config({
 		base: "./res/lib/",
